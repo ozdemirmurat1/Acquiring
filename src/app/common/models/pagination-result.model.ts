@@ -1,5 +1,5 @@
 export class PaginationResultModel<T>{
-    Items:T;
+    items:T[];
     From:number;
     Index:number;
     Size:number;

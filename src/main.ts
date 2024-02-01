@@ -8,16 +8,21 @@ import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 import { StoreModule, provideStore } from '@ngrx/store';
 import { RouterModule } from '@angular/router';
 import { loadingReducer } from './app/common/states/loading/loading-reducer';
+import { ToastrModule } from 'ngx-toastr';
+import { NgxSpinnerModule } from 'ngx-spinner';
 
 
 // layouts componentin içini oluştur
 
 bootstrapApplication(AppComponent,{
   providers:[
+    { provide: "baseUrl", useValue: "https://localhost:7072/api", multi: true },
     DatePipe,
     provideHttpClient(),
     importProvidersFrom(
       BrowserModule,
+      ToastrModule.forRoot(),
+      NgxSpinnerModule,
       SweetAlert2Module.forRoot(),
       StoreModule.forRoot({loading:loadingReducer}),
       RouterModule.forRoot([
