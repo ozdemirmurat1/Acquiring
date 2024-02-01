@@ -1,11 +1,11 @@
 <app-blank title="İş Yerleri" [navs]="navs">
     <app-section sectionTitle="İş Yerleri Listesi">
         <div class="form-group">
-            <button class="btn btn-outline-primary mx-1" *ngIf="count>=25" (click)="getAll()">
+            <button class="btn btn-outline-primary mx-1" (click)="getAll()">
                 <i class="fa fa-rotate"></i>
                 Yenile
             </button>
-            <button class="btn btn-outline-primary mx-1" *ngIf="count<25">
+            <button class="btn btn-outline-primary mx-1">
                 <span class="spinner-border spinner-border-sm"></span>
                 Otomatik yenilemede...
             </button>
@@ -32,21 +32,38 @@
                 </tbody>
             </table>
 
-            <!-- <nav aria-label="Page navigation example" *ngIf="result.totalPages>1">
-                <ul class="pagination justify-content-end">
-                    <li class="page-item" *ngIf="!result.isFirstPage">
-                        <a class="page-link" (click)="getAll(pageNumber-1)">Önceki</a>
-                    </li>
-                    <li class="page-item" [ngClass]="result.pageNumber == n ? 'active': ''"
-                        *ngFor="let n of pageNumbers">
-                        <a class="page-link" (click)="getAll(n)">{{n}}</a>
-                    </li>
-                    <li class="page-item">
-                        <a class="page-link" (click)="getAll(pageNumber+1)" *ngIf="!result.isLastPage">Sonraki</a>
-                    </li>
-                </ul>
-            </nav> -->
+            <div class="row">
+                <div class="col-md-3"></div>
+                <div class="col-md-6">
+                  <nav aria-label="Page navigation example">
+                    <ul class="pagination">
+                      <li class="page-item">
+                        <a class="page-link">
+                          {{currentPageNo}}/{{totalPageCount}}
+                        </a>
+                      </li>
+                      <li class="page-item">
+                        <a class="page-link" [routerLink]="['/chains', currentPageNo - 1 <= 0 ? 1 : currentPageNo - 1]">
+                          Önceki
+                        </a>
+                      </li>
+                      <li class="page-item" *ngFor="let pageNo of pageList;" routerLinkActive="active">
+                        <a class="page-link" [routerLink]="['/chains', (pageNo !== null && pageNo !== undefined) ? pageNo : 1]">
+                          {{ (pageNo !== null && pageNo !== undefined) ? pageNo : 1 }}
+                        </a>
+                      </li>
 
+                      <li class="page-item">
+                        <a class="page-link" [routerLink]="['/chains', currentPageNo + 1 >= totalPageCount ? totalPageCount : currentPageNo + 1]">
+                          Sonraki
+                        </a>
+                      </li>
+                    </ul>
+                  </nav>
+                </div>
+                <div class="col-md-3"></div>
+              </div>
+              
         </div>
         
     </app-section>

@@ -3,7 +3,7 @@ export class PaginationResultModel<T>{
     From:number;
     Index:number;
     Size:number;
-    Count:number;
+    count:number;
     Pages:number;
     HasPrevious:boolean;
     HasNext:boolean;

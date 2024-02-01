@@ -40,6 +40,9 @@ bootstrapApplication(AppComponent,{
                 path:"chains",
                 loadComponent:()=> import ("./app/ui/components/chain/chain.component").then(c=>c.ChainComponent)
               },
+              { 
+                path: "chains/:pageNo",
+                loadComponent:()=> import("./app/ui/components/chain/chain.component").then(module => module.ChainComponent)},
               {
                 path:"merchants",
                 loadComponent:()=> import ("./app/ui/components/merchant/merchant.component").then(c=>c.MerchantComponent)

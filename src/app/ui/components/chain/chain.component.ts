@@ -9,70 +9,95 @@ import { ChainModel } from './models/chain.model';
 import { BlankComponent } from 'src/app/common/components/blank/blank.component';
 import { SectionComponent } from 'src/app/common/components/blank/section/section.component';
 import { NavModel } from 'src/app/common/components/blank/models/nav.model';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-chain',
   standalone: true,
-  imports: [CommonModule,BlankComponent,SectionComponent],
+  imports: [CommonModule, BlankComponent, SectionComponent,RouterModule],
   templateUrl: './chain.component.html',
   styleUrls: ['./chain.component.css']
 })
 export class ChainComponent extends BaseComponent implements OnInit {
-  
-  navs:NavModel[]=[
+
+  navs: NavModel[] = [
     {
-      routerLink:"/",
-      class:"",
-      name:"Ana Sayfa"
+      routerLink: "/",
+      class: "",
+      name: "Ana Sayfa"
     },
     {
-      routerLink:"/reports",
-      class:"active",
-      name:"Raporlar"
+      routerLink: "/reports",
+      class: "active",
+      name: "Raporlar"
     }
   ]
 
-  data:PaginationResultModel<ChainModel>=new PaginationResultModel<ChainModel>;;
-  pageNumber:number=0;
-  pageSize:number=5;
-  pageNumbers:number[]=[];
-  interval:any;
-  count:number=0;
+  data: PaginationResultModel<ChainModel> = new PaginationResultModel<ChainModel>;;
+  pageNumber: number;
+  pageSize: number = 5;
+  pageList: number[] = [];
+  totalPageCount: number;
+  currentPageNo: number;
+  defaultPageNumber: number = 1;
 
   constructor(spinner: NgxSpinnerService,
     private chainService: ChainService,
-    private alertifyService: AlertifyService) {
+    private alertifyService: AlertifyService,
+    private activatedRoute: ActivatedRoute) {
     super(spinner)
   }
 
   async getAll() {
     this.showSpinner(SpinnerType.BallAtom);
-    const allProducts: { data: PaginationResultModel<ChainModel>  } = await this.chainService.read(this.pageNumber,this.pageSize,() => this.hideSpinner(SpinnerType.BallAtom), errorMessage => this.alertifyService.message(errorMessage, {
+    const allProducts: { data: PaginationResultModel<ChainModel> } = await this.chainService.read(this.pageNumber ? this.pageNumber : 0, this.pageSize ? this.pageSize : 5, () => this.hideSpinner(SpinnerType.BallAtom), errorMessage => this.alertifyService.message(errorMessage, {
       dismissOthers: true,
       messageType: MessageType.Error,
       position: Position.TopRight
     }))
 
-    this.data=allProducts.data;
-    console.log(this.data.items);
+    this.data = allProducts.data;
+    //console.log(this.data.items);
 
-    this.pageNumbers=[];
-        for (let i = 0; i < allProducts.data.Count; i++) {
-          this.pageNumbers.push(i+1);
-        }
+  }
+
+  async ngOnInit() {
+
+    this.activatedRoute.params.subscribe(async params => {
+      this.currentPageNo = parseInt(params["pageNo"] ?? 1)
     
-  }
+    
+    console.log(this.currentPageNo);
+    debugger;
 
-  ngOnInit(): void {
-    this.getAll();
-    // this.interval=setInterval(()=>{
-    //   if(this.count<25){
-    //     this.count++;
-    //     this.getAll();
-    //   }else{
-    //     clearInterval(this.interval);
-    //   }
-    // },5000)
-  }
+      const allProducts: { data: PaginationResultModel<ChainModel> } = await this.chainService.read(this.currentPageNo-1,this.pageSize, () => this.hideSpinner(SpinnerType.BallAtom), errorMessage => this.alertifyService.message(errorMessage, {
+        dismissOthers: true,
+        messageType: MessageType.Error,
+        position: Position.TopRight
+      }))
+      //console.log(this.currentPageNo)
+
+      this.data = allProducts.data;
+      this.data.count =allProducts.data.count;
+      this.totalPageCount = Math.ceil(this.data.count / this.pageSize);
+
+
+      this.pageList = [];
+
+      if (this.currentPageNo - 3 <= 0)
+        for (let i = 1; i <= 7; i++)
+          this.pageList.push(i);
+
+      else if (this.currentPageNo + 3 >= this.totalPageCount)
+        for (let i = this.totalPageCount - 6; i <= this.totalPageCount; i++)
+          this.pageList.push(i);
+
+      else
+        for (let i = this.currentPageNo - 3; i <= this.currentPageNo + 3; i++)
+          this.pageList.push(i);
+
+    });
+
+}
 
 }
