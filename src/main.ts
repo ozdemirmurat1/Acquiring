@@ -1,3 +1,5 @@
+/// <reference types="@angular/localize" />
+
 import { BrowserModule, bootstrapApplication } from '@angular/platform-browser';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { AppComponent } from './app/app.component';
