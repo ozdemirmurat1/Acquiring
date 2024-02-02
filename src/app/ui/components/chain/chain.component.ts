@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BaseComponent, SpinnerType } from 'src/app/common/base/base.component';
 import { NgxSpinnerService } from 'ngx-spinner';
@@ -10,11 +10,15 @@ import { BlankComponent } from 'src/app/common/components/blank/blank.component'
 import { SectionComponent } from 'src/app/common/components/blank/section/section.component';
 import { NavModel } from 'src/app/common/components/blank/models/nav.model';
 import { ActivatedRoute, RouterModule } from '@angular/router';
+import { FormsModule, NgForm } from '@angular/forms';
+import { ValidInputDirective } from 'src/app/common/directives/valid-input.directive';
+import { LoadingButtonComponent } from 'src/app/common/components/loading-button/loading-button.component';
+import { CreateChainModel } from './models/create-chain.model';
 
 @Component({
   selector: 'app-chain',
   standalone: true,
-  imports: [CommonModule, BlankComponent, SectionComponent,RouterModule],
+  imports: [CommonModule, BlankComponent, SectionComponent, RouterModule, FormsModule, ValidInputDirective, LoadingButtonComponent],
   templateUrl: './chain.component.html',
   styleUrls: ['./chain.component.css']
 })
@@ -35,16 +39,20 @@ export class ChainComponent extends BaseComponent implements OnInit {
 
   data: PaginationResultModel<ChainModel> = new PaginationResultModel<ChainModel>;;
   pageNumber: number;
-  pageSize: number = 5;
+  pageSize: number = 100;
   pageList: number[] = [];
   totalPageCount: number;
   currentPageNo: number;
   defaultPageNumber: number = 1;
+  isAddForm: boolean = true;
+  isUpdateForm:boolean=false;
+  @Output() createdChain: EventEmitter<CreateChainModel> = new EventEmitter();
 
   constructor(spinner: NgxSpinnerService,
     private chainService: ChainService,
     private alertifyService: AlertifyService,
-    private activatedRoute: ActivatedRoute) {
+    private activatedRoute: ActivatedRoute,
+    private alertify: AlertifyService) {
     super(spinner)
   }
 
@@ -65,12 +73,11 @@ export class ChainComponent extends BaseComponent implements OnInit {
 
     this.activatedRoute.params.subscribe(async params => {
       this.currentPageNo = parseInt(params["pageNo"] ?? 1)
-    
-    
-    console.log(this.currentPageNo);
-    debugger;
 
-      const allProducts: { data: PaginationResultModel<ChainModel> } = await this.chainService.read(this.currentPageNo-1,this.pageSize, () => this.hideSpinner(SpinnerType.BallAtom), errorMessage => this.alertifyService.message(errorMessage, {
+
+      console.log(this.currentPageNo);
+
+      const allProducts: { data: PaginationResultModel<ChainModel> } = await this.chainService.read(this.currentPageNo - 1, this.pageSize, () => this.hideSpinner(SpinnerType.BallAtom), errorMessage => this.alertifyService.message(errorMessage, {
         dismissOthers: true,
         messageType: MessageType.Error,
         position: Position.TopRight
@@ -78,7 +85,7 @@ export class ChainComponent extends BaseComponent implements OnInit {
       //console.log(this.currentPageNo)
 
       this.data = allProducts.data;
-      this.data.count =allProducts.data.count;
+      this.data.count = allProducts.data.count;
       this.totalPageCount = Math.ceil(this.data.count / this.pageSize);
 
 
@@ -98,6 +105,43 @@ export class ChainComponent extends BaseComponent implements OnInit {
 
     });
 
-}
+  }
+
+  showAddForm() {
+    this.isAddForm = true
+  }
+
+  create(form: NgForm) {
+    if (form.valid) {
+      let model: CreateChainModel = new CreateChainModel();
+      model.chainCode = form.controls["chainCode"].value;
+      model.taxAdministration = form.controls["taxAdministration"].value;
+      model.chamberOfCommerce = form.controls["chamberOfCommerce"].value;
+      model.idType = form.controls["idType"].value;
+
+
+      this.chainService.create(model, () => {
+        this.hideSpinner(SpinnerType.BallAtom);
+        this.alertify.message("Ürün başarıyla eklenmiştir.", {
+          dismissOthers: true,
+          messageType: MessageType.Success,
+          position: Position.TopRight
+        });
+        this.getAll();
+      }, errorMessage => {
+        this.alertify.message(errorMessage,
+          {
+            dismissOthers: true,
+            messageType: MessageType.Error,
+            position: Position.TopRight
+          });
+      });
+    }
+  }
+
+  cancel() {
+    this.isAddForm = false;
+    this.isUpdateForm=false;
+  }
 
 }
