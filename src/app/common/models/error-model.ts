@@ -1,14 +1,16 @@
-export class CustomErrorResponse {
-    status: number;
-    statusText: string;
-    url: string;
-    ok: boolean;
-    error: {
-      Errors: string[];
-      Property: string;
-    };
+// error.model.ts
+export interface CustomError {
+    Property: string;
+    Errors:string[];
+
+  }
+  
+  export interface Errors {
+    Errors:CustomError[]
     detail: string;
-    instance: any;
-    title: string;
-    type: string;
-}
+    instance: string;
+    status:number;
+    title:string;
+    type:string;
+  }
+  

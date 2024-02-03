@@ -4,8 +4,7 @@ import { PaginationResultModel } from 'src/app/common/models/pagination-result.m
 import { ResponseModel } from 'src/app/common/models/response.model';
 import { ChainModel } from '../models/chain.model';
 import { HttpErrorResponse } from '@angular/common/http';
-import { CustomErrorResponse } from 'src/app/common/models/error-model';
-import { ErrorResponse } from 'src/app/common/models/ErrorResponse';
+import { CustomError, Errors } from 'src/app/common/models/error-model';
 
 @Injectable({
   providedIn: 'root'
@@ -33,10 +32,22 @@ export class ChainService {
     }, chain)
     .subscribe(result => {
       successCallBack();
-    }, (errorResponse: any) => {      
-      
-      // TO DO
-      errorCallBack(errorResponse);
+    }, (error: HttpErrorResponse) => {
+
+      let customError: Errors;
+
+      customError = error.error;
+      //console.log(customError.Errors)
+
+      const _error: Array<{ Property: string, Errors: Array<string> }> = customError.Errors;
+        let message = "";
+        _error.forEach((v, index) => {
+          v.Errors.forEach((_v, _index) => {
+            message += `${_v}<br>`;
+          });
+        });
+
+      errorCallBack(message);
       
     });
 }}
