@@ -14,6 +14,8 @@ import { FormsModule, NgForm } from '@angular/forms';
 import { ValidInputDirective } from 'src/app/common/directives/valid-input.directive';
 import { LoadingButtonComponent } from 'src/app/common/components/loading-button/loading-button.component';
 import { CreateChainModel } from './models/create-chain.model';
+import { SwalService } from 'src/app/common/directives/services/swal.service';
+import { RemoveByIdModel } from 'src/app/common/models/remove-by-id.model';
 
 @Component({
   selector: 'app-chain',
@@ -44,15 +46,17 @@ export class ChainComponent extends BaseComponent implements OnInit {
   totalPageCount: number;
   currentPageNo: number;
   defaultPageNumber: number = 1;
-  isAddForm: boolean = true;
-  isUpdateForm:boolean=false;
+  isAddForm: boolean = false;
+  isUpdateForm: boolean = false;
+  updateModel: ChainModel = new ChainModel();
   @Output() createdChain: EventEmitter<CreateChainModel> = new EventEmitter();
 
   constructor(spinner: NgxSpinnerService,
     private chainService: ChainService,
     private alertifyService: AlertifyService,
     private activatedRoute: ActivatedRoute,
-    private alertify: AlertifyService) {
+    private alertify: AlertifyService,
+    private _swal:SwalService) {
     super(spinner)
   }
 
@@ -139,9 +143,54 @@ export class ChainComponent extends BaseComponent implements OnInit {
     }
   }
 
+  update(form: NgForm) {
+    if (form.valid) {
+      this.chainService.update(this.updateModel, () => {
+        this.hideSpinner(SpinnerType.BallAtom);
+        this.alertify.message("İş Yeri Başarıyla Güncellenmiştir...", {
+          dismissOthers: true,
+          messageType: MessageType.Success,
+          position: Position.TopRight
+        });
+        this.getAll();
+      }, errorMessage => {
+        this.alertify.message(errorMessage,
+          {
+            dismissOthers: true,
+            messageType: MessageType.Error,
+            position: Position.TopRight
+          });
+      });
+
+
+    }
+  }
+
   cancel() {
     this.isAddForm = false;
-    this.isUpdateForm=false;
+    this.isUpdateForm = false;
+  }
+
+  get(model: ChainModel) {
+    // Üç nokta referansını alma demek
+    this.updateModel = { ...model };
+    this.isUpdateForm = true;
+    this.isAddForm = false;
+  }
+
+  removeById(id: string) {
+
+    this._swal.callSwal("Sil","Sil?","Hesap planı kodunu silmek istiyor musunuz?",()=>{
+      let model = new RemoveByIdModel();
+      model.id = id;
+      debugger;
+    })
+
+    //   this.chainService.removeById(model, res => {
+    //     this.getAll();
+    //     this._toastr.toast(ToastrType.Info, res.message, "Silme Başarılı!");
+    //   });
+    // });
   }
 
 }

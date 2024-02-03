@@ -41,9 +41,61 @@
     </form>
   </app-section>
   <!-- Ekleme İşlemi -->
+
+  <!-- Güncelleme İşlemi -->
+  <app-section sectionTitle="İş Yeri Güncelleme Formu" *ngIf="isUpdateForm">
+    <!-- AutoComplete:Off demek daha önce yazdıklarımı hatırlama -->
+   <form #updateForm="ngForm" autocomplete="off" (ngSubmit)="update(updateForm)">
+       <div class="row">
+           <div class="col-md-2">
+               <label for="code">İş YeriKodu</label>
+               <input [(ngModel)]="updateModel.chainCode" type="text" #chainCode name="chainCode" required  class="form-control" [validInput]="chainCode.validity.valid">
+               <!-- <div class="invalid-feedback">
+                   Kod Alanı en az 5 karakter olmalıdır!
+               </div> -->
+           </div>
+           <div class="col-md-2">
+            <label for="code">Vergi Dairesi</label>
+            <input [(ngModel)]="updateModel.taxAdministration" type="text" #taxAdministration name="taxAdministration" required  class="form-control" [validInput]="taxAdministration.validity.valid">
+          </div>
+          <div class="col-md-2">
+            <label for="code">Ticaret Odası</label>
+            <input [(ngModel)]="updateModel.chamberOfCommerce" type="text" #chamberOfCommerce name="chamberOfCommerce" required  class="form-control" [validInput]="chamberOfCommerce.validity.valid">
+          </div>
+          <div class="col-md-2">
+            <label for="code">Kimlik Tipi</label>
+            <input [(ngModel)]="updateModel.idType" type="text" #idType name="chamberOfCommerce" required  class="form-control" [validInput]="idType.validity.valid">
+          </div>
+
+           <div class="col-md-3">
+               <label>İşlemler</label>
+               <app-loading-button 
+               [form]="updateForm" btnClass="btn btn-outline-info w-100" 
+               btnName="Güncelle" 
+               btnLoadingClass="btn btn-outline-info w-100"
+               btnLoadingDescription="Güncelleniyor..."
+               iconClass="fa fa-check">
+               </app-loading-button>                   
+           </div>
+           <div class="col-md-12">
+               <button class="btn btn-outline-danger w-100" (click)="cancel()">Vazgeç</button>
+           </div>
+       </div>
+   </form>
+  </app-section>
+  <!-- Güncelleme İşlemi -->
   
   <!-- İşYeriListesi -->
   <app-section sectionTitle="İş Yerleri Listesi">
+    <div class="form-group float-left col-md-4">
+      <button class="btn btn-outline-primary" *ngIf="!isAddForm && !isUpdateForm" (click)="showAddForm()">
+          <i class="fa fa-plus"></i>
+      </button>
+      <!-- <app-excel-loading-button (click)="exportExcel()">
+
+      </app-excel-loading-button> -->
+      
+  </div>
     <div class="form-group">
       <button class="btn btn-outline-primary mx-1" (click)="getAll()">
         <i class="fa fa-rotate"></i>
@@ -62,15 +114,29 @@
             <th>Vergi Dairesi</th>
             <th>Ticaret Odası</th>
             <th>Kimlik Tipi</th>
+            <th>İşlemler</th>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let chain of data.items  let index=index">
             <!-- <td>{{((index + ((pageNumber -1) * pageSize)) + 1)}}</td> -->
             <td [innerText]="chain.chainCode"></td>
-            <td [innerText]="chain.chamberOfCommerce"></td>
-            <td [innerText]="chain.idType"></td>
             <td [innerText]="chain.taxAdministration"></td>
+            <td [innerText]="chain.chamberOfCommerce"></td>
+            <td [innerText]="chain.idType"></td>            
+            <td>
+              <div *ngIf="!isUpdateForm">
+                  <button class="btn btn-outline-warning btn-sm"
+                  (click)="get(chain)"
+                   title="Güncelle">
+                      <i class="fa fa-edit"></i>
+                  </button>
+                  <button class="btn btn-outline-danger btn-sm mx-1" title="Sil" (click)="removeById(chain.id)">
+                      <i class="fa fa-trash"></i>
+                  </button>
+              </div>
+             
+          </td>
 
           </tr>
         </tbody>

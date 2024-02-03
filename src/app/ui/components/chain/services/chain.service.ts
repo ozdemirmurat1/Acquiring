@@ -5,6 +5,7 @@ import { ResponseModel } from 'src/app/common/models/response.model';
 import { ChainModel } from '../models/chain.model';
 import { HttpErrorResponse } from '@angular/common/http';
 import { CustomError, Errors } from 'src/app/common/models/error-model';
+import { CreateChainModel } from '../models/create-chain.model';
 
 @Injectable({
   providedIn: 'root'
@@ -25,21 +26,21 @@ export class ChainService {
     return await promiseData;
   }
 
-  create(chain: ChainModel, successCallBack?: () => void, errorCallBack?: (errorMessage: string) => void) {
+  create(chain: CreateChainModel, successCallBack?: () => void, errorCallBack?: (errorMessage: string) => void) {
     this.httpClientService.post({
       controller: "chains",
       action: "create"
     }, chain)
-    .subscribe(result => {
-      successCallBack();
-    }, (error: HttpErrorResponse) => {
+      .subscribe(result => {
+        successCallBack();
+      }, (error: HttpErrorResponse) => {
 
-      let customError: Errors;
+        let customError: Errors;
 
-      customError = error.error;
-      //console.log(customError.Errors)
+        customError = error.error;
+        //console.log(customError.Errors)
 
-      const _error: Array<{ Property: string, Errors: Array<string> }> = customError.Errors;
+        const _error: Array<{ Property: string, Errors: Array<string> }> = customError.Errors;
         let message = "";
         _error.forEach((v, index) => {
           v.Errors.forEach((_v, _index) => {
@@ -47,8 +48,40 @@ export class ChainService {
           });
         });
 
-      errorCallBack(message);
-      
-    });
-}}
+        errorCallBack(message);
+
+      });
+  }
+
+  update(chain: ChainModel, successCallBack?: () => void, errorCallBack?: (errorMessage: string) => void) {
+    this.httpClientService.post({
+      controller: "chains",
+      action: "update"
+    }, chain)
+      .subscribe(result => {
+        successCallBack();
+      }, (error: HttpErrorResponse) => {
+
+        let customError: Errors;
+
+        customError = error.error;
+
+        const _error: Array<{ Property: string, Errors: Array<string> }> = customError.Errors;
+        let message = "";
+        _error.forEach((v, index) => {
+          v.Errors.forEach((_v, _index) => {
+            message += `${_v}<br>`;
+          });
+        });
+
+        errorCallBack(message);
+
+      });
+  }
+
+  
+
+
+
+}
 
