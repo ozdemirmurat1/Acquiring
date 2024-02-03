@@ -39,7 +39,7 @@ export class ChainComponent extends BaseComponent implements OnInit {
 
   data: PaginationResultModel<ChainModel> = new PaginationResultModel<ChainModel>;;
   pageNumber: number;
-  pageSize: number = 100;
+  pageSize: number = 5;
   pageList: number[] = [];
   totalPageCount: number;
   currentPageNo: number;

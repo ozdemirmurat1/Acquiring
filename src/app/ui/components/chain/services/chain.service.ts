@@ -13,7 +13,7 @@ export class ChainService {
 
   constructor(private httpClientService: HttpClientService) { }
 
-  async read(PageIndex: number = 0, PageSize: number = 100, successCallBack?: () => void, errorCallBack?: (errorMessage: string) => void): Promise<{ data: PaginationResultModel<ChainModel> }> {
+  async read(PageIndex: number = 0, PageSize: number = 5, successCallBack?: () => void, errorCallBack?: (errorMessage: string) => void): Promise<{ data: PaginationResultModel<ChainModel> }> {
     const promiseData: Promise<{ data: PaginationResultModel<ChainModel> }> = this.httpClientService.get<{ data: PaginationResultModel<ChainModel> }>({
       controller: "Chains/GetList",
       queryString: `PageIndex=${PageIndex}&PageSize=${PageSize}`
