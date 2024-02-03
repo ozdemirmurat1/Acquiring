@@ -92,7 +92,7 @@ export class ChainComponent extends BaseComponent implements OnInit {
       this.data.count = allProducts.data.count;
       this.totalPageCount = Math.ceil(this.data.count / this.pageSize);
 
-
+      debugger;
       this.pageList = [];
 
       if (this.currentPageNo - 3 <= 0)
@@ -126,7 +126,7 @@ export class ChainComponent extends BaseComponent implements OnInit {
 
       this.chainService.create(model, () => {
         this.hideSpinner(SpinnerType.BallAtom);
-        this.alertify.message("Ürün başarıyla eklenmiştir.", {
+        this.alertify.message("İş Yeri başarıyla eklenmiştir.", {
           dismissOthers: true,
           messageType: MessageType.Success,
           position: Position.TopRight
@@ -161,8 +161,6 @@ export class ChainComponent extends BaseComponent implements OnInit {
             position: Position.TopRight
           });
       });
-
-
     }
   }
 
@@ -180,17 +178,33 @@ export class ChainComponent extends BaseComponent implements OnInit {
 
   removeById(id: string) {
 
-    this._swal.callSwal("Sil","Sil?","Hesap planı kodunu silmek istiyor musunuz?",()=>{
-      let model = new RemoveByIdModel();
+    let model = new RemoveByIdModel();
+    this._swal.callSwal("Sil","Sil?","İş Yerini kodunu silmek istiyor musunuz?",()=>{
+      
       model.id = id;
       debugger;
+
+      this.chainService.delete(id, () => {
+        this.hideSpinner(SpinnerType.BallAtom);
+        this.alertify.message("İş Yeri silinmiştir.", {
+          dismissOthers: true,
+          messageType: MessageType.Success,
+          position: Position.TopRight
+        });
+        this.getAll();
+      }, errorMessage => {
+        this.alertify.message(errorMessage,
+          {
+            dismissOthers: true,
+            messageType: MessageType.Error,
+            position: Position.TopRight
+          });
+      });
     })
 
-    //   this.chainService.removeById(model, res => {
-    //     this.getAll();
-    //     this._toastr.toast(ToastrType.Info, res.message, "Silme Başarılı!");
-    //   });
-    // });
+    console.log(model.id);
+
+    
   }
 
 }

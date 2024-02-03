@@ -110,6 +110,7 @@
       <table class="table table-bordered">
         <thead>
           <tr style="background-color: #f1f1f1;">
+            <th>Id</th>
             <th>İş Yeri Kodu</th>
             <th>Vergi Dairesi</th>
             <th>Ticaret Odası</th>
@@ -120,6 +121,7 @@
         <tbody>
           <tr *ngFor="let chain of data.items  let index=index">
             <!-- <td>{{((index + ((pageNumber -1) * pageSize)) + 1)}}</td> -->
+            <td [innerText]="chain.id"></td>
             <td [innerText]="chain.chainCode"></td>
             <td [innerText]="chain.taxAdministration"></td>
             <td [innerText]="chain.chamberOfCommerce"></td>

@@ -6,6 +6,8 @@ import { ChainModel } from '../models/chain.model';
 import { HttpErrorResponse } from '@angular/common/http';
 import { CustomError, Errors } from 'src/app/common/models/error-model';
 import { CreateChainModel } from '../models/create-chain.model';
+import { Observable, firstValueFrom } from 'rxjs';
+import { RemoveByIdModel } from 'src/app/common/models/remove-by-id.model';
 
 @Injectable({
   providedIn: 'root'
@@ -79,9 +81,20 @@ export class ChainService {
       });
   }
 
-  
+  async delete(id:string, successCallBack?: () => void, errorCallBack?: (errorMessage: string) => void): Promise<{ data: RemoveByIdModel }> {
+    const promiseData: Promise<{ data: RemoveByIdModel }> = this.httpClientService.get<{ data: RemoveByIdModel }>({
+      controller: "Chains/Delete",
+      queryString: `id=${id}`
+    }).toPromise();
 
+    promiseData.then(d => successCallBack())
+      .catch((errorResponse: HttpErrorResponse) => errorCallBack(errorResponse.message))
+
+    return await promiseData;
+  }
 
 
 }
+
+
 
