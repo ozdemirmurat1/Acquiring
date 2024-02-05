@@ -7,8 +7,9 @@ export class StringService {
 
   constructor() { }
 
-  trLowerCase(value:string){
+  trLowerCase(value:any){
     let newValue:string="";
+    debugger;
     for (let i = 0; i < value.length; i++) {
       const element = value[i];
       if(element=="İ"){

@@ -16,11 +16,12 @@ import { LoadingButtonComponent } from 'src/app/common/components/loading-button
 import { CreateChainModel } from './models/create-chain.model';
 import { SwalService } from 'src/app/common/directives/services/swal.service';
 import { RemoveByIdModel } from 'src/app/common/models/remove-by-id.model';
+import { ChainPipe } from './pipes/chain.pipe';
 
 @Component({
   selector: 'app-chain',
   standalone: true,
-  imports: [CommonModule, BlankComponent, SectionComponent, RouterModule, FormsModule, ValidInputDirective, LoadingButtonComponent],
+  imports: [CommonModule, BlankComponent, SectionComponent, RouterModule, FormsModule, ValidInputDirective, LoadingButtonComponent,ChainPipe],
   templateUrl: './chain.component.html',
   styleUrls: ['./chain.component.css']
 })
@@ -49,6 +50,7 @@ export class ChainComponent extends BaseComponent implements OnInit {
   isAddForm: boolean = false;
   isUpdateForm: boolean = false;
   updateModel: ChainModel = new ChainModel();
+  filterText: string = "";
   @Output() createdChain: EventEmitter<CreateChainModel> = new EventEmitter();
 
   constructor(spinner: NgxSpinnerService,
@@ -60,21 +62,12 @@ export class ChainComponent extends BaseComponent implements OnInit {
     super(spinner)
   }
 
-  async getAll() {
-    this.showSpinner(SpinnerType.BallAtom);
-    const allProducts: { data: PaginationResultModel<ChainModel> } = await this.chainService.read(this.pageNumber ? this.pageNumber : 0, this.pageSize ? this.pageSize : 5, () => this.hideSpinner(SpinnerType.BallAtom), errorMessage => this.alertifyService.message(errorMessage, {
-      dismissOthers: true,
-      messageType: MessageType.Error,
-      position: Position.TopRight
-    }))
-
-    this.data = allProducts.data;
-    //console.log(this.data.items);
-
-  }
-
   async ngOnInit() {
 
+    this.getAll();
+  }
+
+  getAll(){
     this.activatedRoute.params.subscribe(async params => {
       this.currentPageNo = parseInt(params["pageNo"] ?? 1)
 
@@ -88,11 +81,10 @@ export class ChainComponent extends BaseComponent implements OnInit {
       }))
       //console.log(this.currentPageNo)
 
-      this.data = allProducts.data;
+      this.data.items = allProducts.data.items;
       this.data.count = allProducts.data.count;
       this.totalPageCount = Math.ceil(this.data.count / this.pageSize);
 
-      debugger;
       this.pageList = [];
 
       if (this.currentPageNo - 3 <= 0)
@@ -108,7 +100,6 @@ export class ChainComponent extends BaseComponent implements OnInit {
           this.pageList.push(i);
 
     });
-
   }
 
   showAddForm() {
