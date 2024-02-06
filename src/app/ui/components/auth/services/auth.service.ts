@@ -22,6 +22,7 @@ export class AuthService {
     const loginResponseModel: LoginResponseModel = await firstValueFrom(observable) as LoginResponseModel;
     debugger;
     if (loginResponseModel) {
+      // BURADAKİ ACCESS VE REFRESHTOKEN LARI DEĞER İLE TAŞI İDENETİYCHECK TE KULLAN
       localStorage.setItem("accessToken", loginResponseModel.accessToken.token);
       localStorage.setItem("refreshToken", loginResponseModel.refreshTokenDto.token);
       _isAuthenticatedAccessTokenExpire=loginResponseModel.accessToken.expiration;
