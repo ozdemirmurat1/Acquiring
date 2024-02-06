@@ -71,9 +71,6 @@ export class ChainComponent extends BaseComponent implements OnInit {
     this.activatedRoute.params.subscribe(async params => {
       this.currentPageNo = parseInt(params["pageNo"] ?? 1)
 
-
-      console.log(this.currentPageNo);
-
       const allProducts: { data: PaginationResultModel<ChainModel> } = await this.chainService.read(this.currentPageNo - 1, this.pageSize, () => this.hideSpinner(SpinnerType.BallAtom), errorMessage => this.alertifyService.message(errorMessage, {
         dismissOthers: true,
         messageType: MessageType.Error,

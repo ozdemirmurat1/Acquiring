@@ -3,6 +3,7 @@
 import { BrowserModule, bootstrapApplication } from '@angular/platform-browser';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { AppComponent } from './app/app.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DatePipe } from '@angular/common';
 import {provideHttpClient} from "@angular/common/http";
 import { importProvidersFrom } from '@angular/core';
@@ -12,6 +13,8 @@ import { RouterModule } from '@angular/router';
 import { loadingReducer } from './app/common/states/loading/loading-reducer';
 import { ToastrModule } from 'ngx-toastr';
 import { NgxSpinnerModule } from 'ngx-spinner';
+import { AuthGuard } from './app/ui/components/auth/guards/auth.guard';
+import { JwtHelperService } from '@auth0/angular-jwt';
 
 
 // layouts componentin içini oluştur
@@ -22,7 +25,9 @@ bootstrapApplication(AppComponent,{
     DatePipe,
     provideHttpClient(),
     importProvidersFrom(
+      JwtHelperService,
       BrowserModule,
+      BrowserAnimationsModule,
       ToastrModule.forRoot(),
       NgxSpinnerModule,
       SweetAlert2Module.forRoot(),
@@ -31,31 +36,41 @@ bootstrapApplication(AppComponent,{
           {
             path:"",
             loadComponent:()=>import("./app/ui/components/layouts/layouts.component").then(c=>c.LayoutsComponent),
+            canActivate:[AuthGuard],
             children:[
               {
                 path:"",
-                loadComponent:()=>import("./app/ui/components/blank/blank.component").then(c=>c.BlankComponent)
+                loadComponent:()=>import("./app/ui/components/blank/blank.component").then(c=>c.BlankComponent),
+                canActivate:[AuthGuard]
               },
               {
                 path:"chains",
-                loadComponent:()=> import ("./app/ui/components/chain/chain.component").then(c=>c.ChainComponent)
+                loadComponent:()=> import ("./app/ui/components/chain/chain.component").then(c=>c.ChainComponent),
+                canActivate:[AuthGuard]
               },
               { 
                 path: "chains/:pageNo",
                 loadComponent:()=> import("./app/ui/components/chain/chain.component").then(module => module.ChainComponent)},
               {
                 path:"merchants",
-                loadComponent:()=> import ("./app/ui/components/merchant/merchant.component").then(c=>c.MerchantComponent)
+                loadComponent:()=> import ("./app/ui/components/merchant/merchant.component").then(c=>c.MerchantComponent),
+                canActivate:[AuthGuard]
               },
               {
                 path:"terminals",
-                loadComponent:()=> import ("./app/ui/components/terminal/terminal.component").then(c=>c.TerminalComponent)
+                loadComponent:()=> import ("./app/ui/components/terminal/terminal.component").then(c=>c.TerminalComponent),
+                canActivate:[AuthGuard]
               },
               {
                 path:"logs",
-                loadComponent:()=> import ("./app/ui/components/log/log.component").then(c=>c.LogComponent)
+                loadComponent:()=> import ("./app/ui/components/log/log.component").then(c=>c.LogComponent),
+                canActivate:[AuthGuard]
               }
             ]
+          },
+          {
+            path: "login",
+            loadComponent: () => import("./app/ui/components/auth/login/login.component").then(c => c.LoginComponent)
           }
       ])),
       provideStore()
