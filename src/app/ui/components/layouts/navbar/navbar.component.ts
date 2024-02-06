@@ -20,7 +20,7 @@ export class NavbarComponent {
 
     signOut() {
       localStorage.removeItem("accessToken");
-      this.identityCheckService.identityCheck();
+      //this.identityCheckService.identityCheck();
       this.router.navigateByUrl("/login")
       this.toastrService.message("Oturum kapatılmıştır!", "Oturum Kapatıldı", {
         messageType: ToastrMessageType.Warning,

@@ -26,7 +26,7 @@ export class IdentityCheckService {
 
     if(!_isAuthenticated){
       this.router.navigateByUrl("/login")
-      this.toastrService.message("Yetkisiz ERİŞİM.", "Giriş BaşarıSIZ", {
+      this.toastrService.message("Yetkisiz Erişim", "Giriş Başarısız", {
         messageType: ToastrMessageType.Warning,
         position: ToastrPosition.TopRight
       })
