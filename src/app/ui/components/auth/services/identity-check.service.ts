@@ -14,8 +14,8 @@ export class IdentityCheckService {
   identityCheck() {
     const jwtHelper = new JwtHelperService();
     const token: string = localStorage.getItem("accessToken");
-    let accessTokenExpireParse=Date.parse(_isAuthenticatedAccessTokenExpire);
-    
+    let accessTokenExpireParse = Date.parse(_isAuthenticatedAccessTokenExpire);
+
 
     let expired: boolean;
     try {
@@ -31,19 +31,20 @@ export class IdentityCheckService {
 
       const refreshToken: string = localStorage.getItem("refreshToken");
 
-      let expiredRefreshToken:boolean=false;
+      let expiredRefreshToken: boolean = false;
 
-        let refreshTokenExpireParse=new Date(_isAuthenticatedRefreshTokenExpire);
-        const today = new Date();
-        if(today>refreshTokenExpireParse){
-            expiredRefreshToken=true;
-        }
-      
+      let refreshTokenExpireParse = new Date(_isAuthenticatedRefreshTokenExpire);
+      const today = new Date();
+      if (today > refreshTokenExpireParse) {
+        expiredRefreshToken = true;
+      }
+
 
       _isAuthenticatedRefreshToken = refreshToken != null && !expiredRefreshToken && expiredRefreshToken != undefined && expiredRefreshToken != undefined;
 
       if (!_isAuthenticatedRefreshToken) {
-        debugger;
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
         this.router.navigateByUrl("/login")
         this.toastrService.message("Yetkisiz Erişim", "Giriş Başarısız", {
           messageType: ToastrMessageType.Warning,
