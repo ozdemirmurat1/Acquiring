@@ -20,10 +20,12 @@ export class AuthService {
     }, { Email:model.Email,Password:model.Password})
 
     const loginResponseModel: LoginResponseModel = await firstValueFrom(observable) as LoginResponseModel;
-
+    debugger;
     if (loginResponseModel) {
       localStorage.setItem("accessToken", loginResponseModel.accessToken.token);
       localStorage.setItem("refreshToken", loginResponseModel.refreshTokenDto.token);
+      _isAuthenticatedAccessTokenExpire=loginResponseModel.accessToken.expiration;
+      _isAuthenticatedRefreshTokenExpire=loginResponseModel.refreshTokenDto.expiration;
 
       this.toastrService.message("Kullanıcı girişi başarıyla sağlanmıştır.", "Giriş Başarılı", {
         messageType: ToastrMessageType.Success,
@@ -34,3 +36,6 @@ export class AuthService {
     callBackFunction();
   }
 }
+
+export let _isAuthenticatedAccessTokenExpire: string;
+export let _isAuthenticatedRefreshTokenExpire: string;
