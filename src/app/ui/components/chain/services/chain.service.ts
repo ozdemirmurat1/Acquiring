@@ -40,7 +40,7 @@ export class ChainService {
         let customError: Errors;
 
         customError = error.error;
-        //console.log(customError.Errors)
+        debugger;
 
         const _error: Array<{ Property: string, Errors: Array<string> }> = customError.Errors;
         let message = "";

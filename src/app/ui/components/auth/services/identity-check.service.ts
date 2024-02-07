@@ -20,7 +20,6 @@ export class IdentityCheckService {
     let parseAccessToken=JSON.stringify(decyrptAccessToken);
     //let accessTokenExpireParse = Date.parse(_isAuthenticatedAccessTokenExpire);
 
-    debugger;
     let expired: boolean;
 
     try {
