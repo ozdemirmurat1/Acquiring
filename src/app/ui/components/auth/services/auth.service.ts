@@ -46,15 +46,6 @@ export class AuthService {
       let customError: Errors;
 
       customError = error.error;
-      debugger;
-
-      // const _error: Array<{ Property: string, Errors: Array<string> }> = customError.Errors;
-      // let message = "";
-      // _error.forEach((v, index) => {
-      //   v.Errors.forEach((_v, _index) => {
-      //     message += `${_v}<br>`;
-      //   });
-      // });
 
       this.alertifyService.message(customError.detail,
         {

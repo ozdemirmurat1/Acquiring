@@ -5,7 +5,7 @@ import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { AppComponent } from './app/app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DatePipe } from '@angular/common';
-import {provideHttpClient} from "@angular/common/http";
+import {HTTP_INTERCEPTORS, HttpClientModule, provideHttpClient} from "@angular/common/http";
 import { importProvidersFrom } from '@angular/core';
 import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 import { StoreModule, provideStore } from '@ngrx/store';
@@ -15,6 +15,7 @@ import { ToastrModule } from 'ngx-toastr';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { AuthGuard } from './app/ui/components/auth/guards/auth.guard';
 import { JwtHelperService } from '@auth0/angular-jwt';
+import { HttpErrorHandlerInterceptorService } from './app/common/directives/services/error.service';
 
 
 // layouts componentin içini oluştur
@@ -25,6 +26,7 @@ bootstrapApplication(AppComponent,{
     DatePipe,
     provideHttpClient(),
     importProvidersFrom(
+      HttpClientModule,
       JwtHelperService,
       BrowserModule,
       BrowserAnimationsModule,
@@ -73,6 +75,7 @@ bootstrapApplication(AppComponent,{
             loadComponent: () => import("./app/ui/components/auth/login/login.component").then(c => c.LoginComponent)
           }
       ])),
+      { provide: HTTP_INTERCEPTORS, useClass: HttpErrorHandlerInterceptorService, multi: true },
       provideStore()
   ]
 })
