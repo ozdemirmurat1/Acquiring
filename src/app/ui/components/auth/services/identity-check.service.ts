@@ -16,7 +16,7 @@ export class IdentityCheckService {
   identityCheck() {
     const jwtHelper = new JwtHelperService();
     debugger;
-    let decyrptAccessToken=this._crypto.decrypto(localStorage.getItem("accessToken").toString());
+    let decyrptAccessToken=this._crypto.decrypto(localStorage.getItem("accessToken")?.toString());
     let parseAccessToken=JSON.stringify(decyrptAccessToken);
     //let accessTokenExpireParse = Date.parse(_isAuthenticatedAccessTokenExpire);
 
@@ -34,7 +34,7 @@ export class IdentityCheckService {
 
     if (!_isAuthenticatedAccessToken) {
 
-      let decyrptRefreshToken=this._crypto.decrypto(localStorage.getItem("refreshToken").toString());
+      let decyrptRefreshToken=this._crypto.decrypto(localStorage.getItem("refreshToken")?.toString());
       let parseRefreshToken=JSON.stringify(decyrptRefreshToken);
 
       let expiredRefreshToken: boolean = false;
