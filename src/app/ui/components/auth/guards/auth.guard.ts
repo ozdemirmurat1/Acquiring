@@ -16,7 +16,6 @@ export class AuthGuard implements CanActivate {
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
     this.identityCheckService.identityCheck();
-    debugger;
 
     return true;
   }

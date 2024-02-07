@@ -8,18 +8,22 @@ import { CustomError, Errors } from 'src/app/common/models/error-model';
 import { CreateChainModel } from '../models/create-chain.model';
 import { Observable, firstValueFrom } from 'rxjs';
 import { RemoveByIdModel } from 'src/app/common/models/remove-by-id.model';
+import { AccesssToken } from '../../auth/services/identity-check.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ChainService {
 
-  constructor(private httpClientService: HttpClientService) { }
+  constructor(private httpClientService: HttpClientService) {
+    console.log(AccesssToken)
+   }
 
   async read(PageIndex: number = 0, PageSize: number = 5, successCallBack?: () => void, errorCallBack?: (errorMessage: string) => void): Promise<{ data: PaginationResultModel<ChainModel> }> {
     const promiseData: Promise<{ data: PaginationResultModel<ChainModel> }> = this.httpClientService.get<{ data: PaginationResultModel<ChainModel> }>({
       controller: "Chains/GetList",
       queryString: `PageIndex=${PageIndex}&PageSize=${PageSize}`,
+      headers: new HttpHeaders({"Authorization":`Bearer ${AccesssToken}`})
     }).toPromise();
 
     promiseData.then(d => successCallBack())

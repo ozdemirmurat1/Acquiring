@@ -15,26 +15,28 @@ export class IdentityCheckService {
 
   identityCheck() {
     const jwtHelper = new JwtHelperService();
-    debugger;
-    let decyrptAccessToken=this._crypto.decrypto(localStorage.getItem("accessToken")?.toString());
-    let parseAccessToken=JSON.stringify(decyrptAccessToken);
+
+    let decyrptAccessToken=this._crypto.decrypto(localStorage.getItem("accessToken"));
+    let parseAccessToken=JSON.parse(decyrptAccessToken);
+
+    AccesssToken=parseAccessToken;
     //let accessTokenExpireParse = Date.parse(_isAuthenticatedAccessTokenExpire);
 
     let expired: boolean;
 
     try {
-      expired = jwtHelper.isTokenExpired(parseAccessToken);
+      expired = jwtHelper.isTokenExpired(decyrptAccessToken);
 
     } catch {
       expired = true;
     }
 
     _isAuthenticatedAccessToken = parseAccessToken !== null && !expired && parseAccessToken != undefined && expired != undefined && decyrptAccessToken!==null && decyrptAccessToken!=="";
-    debugger;
+ 
 
     if (!_isAuthenticatedAccessToken) {
 
-      let decyrptRefreshToken=this._crypto.decrypto(localStorage.getItem("refreshToken")?.toString());
+      let decyrptRefreshToken=this._crypto.decrypto(localStorage.getItem("refreshToken"));
       let parseRefreshToken=JSON.stringify(decyrptRefreshToken);
 
       let expiredRefreshToken: boolean = false;
@@ -74,3 +76,5 @@ export class IdentityCheckService {
 
 export let _isAuthenticatedAccessToken: boolean;
 export let _isAuthenticatedRefreshToken: boolean;
+export let  AccesssToken:string;
+

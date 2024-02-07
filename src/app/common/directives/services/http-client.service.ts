@@ -53,7 +53,13 @@ export class HttpClientService {
     return this.httpClient.delete<T>(url, { headers: requestParameter.headers, responseType: requestParameter.responseType as 'json' });
   }
 
+  getToken(){
+
+  }
+
 }
+
+
 
 
 export class RequestParameters {
