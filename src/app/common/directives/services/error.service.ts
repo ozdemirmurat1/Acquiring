@@ -1,10 +1,11 @@
-import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpStatusCode } from '@angular/common/http';
+import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpStatusCode } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { CustomToastrService, ToastrMessageType, ToastrPosition } from './toastr.service';
 import { SpinnerType } from '../../base/base.component';
 import { Observable, catchError, of } from 'rxjs';
+import { Errors } from '../../models/error-model';
 
 @Injectable({
   providedIn: 'root'
@@ -16,6 +17,11 @@ export class HttpErrorHandlerInterceptorService implements HttpInterceptor {
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
 
     return next.handle(req).pipe(catchError(error => {
+
+      error:HttpErrorResponse;
+          let customError: Errors;
+          customError = error.error;
+
       switch (error.status) {
         case HttpStatusCode.Unauthorized:
             this.toastrService.message("Bu işlemi yapmaya yetkiniz bulunmamaktadır!", "Yetkisiz işlem!", {
@@ -31,7 +37,7 @@ export class HttpErrorHandlerInterceptorService implements HttpInterceptor {
           });
           break;
         case HttpStatusCode.BadRequest:
-          this.toastrService.message("Geçersiz istek yapıldı!", "Geçersiz istek!", {
+          this.toastrService.message(customError.detail, customError.status.toString(), {
             messageType: ToastrMessageType.Warning,
             position: ToastrPosition.BottomFullWidth
           });
