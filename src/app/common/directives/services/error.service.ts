@@ -22,6 +22,7 @@ export class HttpErrorHandlerInterceptorService implements HttpInterceptor {
       error: HttpErrorResponse;
       let customError: Errors;
       let message = "";
+      debugger;
       customError = error.error;
       if (customError.Errors) {
         debugger;
@@ -73,10 +74,20 @@ export class HttpErrorHandlerInterceptorService implements HttpInterceptor {
           });
           break;
         default:
-          this.toastrService.message("Beklenmeyen bir hata meydana gelmiştir!", "Hata!", {
-            messageType: ToastrMessageType.Warning,
-            position: ToastrPosition.BottomFullWidth
-          });
+          if(message){
+            this.alertify.message(message,
+              {
+                dismissOthers: true,
+                messageType: MessageType.Error,
+                position: Position.TopRight
+              });
+          }
+          else{
+            this.toastrService.message(message ? message : customError.detail, customError.status.toString(), {
+              messageType: ToastrMessageType.Warning,
+              position: ToastrPosition.BottomFullWidth
+            });
+          }
           break;
       }
 

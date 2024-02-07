@@ -3,7 +3,7 @@ import { HttpClientService } from 'src/app/common/directives/services/http-clien
 import { PaginationResultModel } from 'src/app/common/models/pagination-result.model';
 import { ResponseModel } from 'src/app/common/models/response.model';
 import { ChainModel } from '../models/chain.model';
-import { HttpErrorResponse } from '@angular/common/http';
+import { HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { CustomError, Errors } from 'src/app/common/models/error-model';
 import { CreateChainModel } from '../models/create-chain.model';
 import { Observable, firstValueFrom } from 'rxjs';
@@ -19,7 +19,7 @@ export class ChainService {
   async read(PageIndex: number = 0, PageSize: number = 5, successCallBack?: () => void, errorCallBack?: (errorMessage: string) => void): Promise<{ data: PaginationResultModel<ChainModel> }> {
     const promiseData: Promise<{ data: PaginationResultModel<ChainModel> }> = this.httpClientService.get<{ data: PaginationResultModel<ChainModel> }>({
       controller: "Chains/GetList",
-      queryString: `PageIndex=${PageIndex}&PageSize=${PageSize}`
+      queryString: `PageIndex=${PageIndex}&PageSize=${PageSize}`,
     }).toPromise();
 
     promiseData.then(d => successCallBack())
@@ -31,7 +31,7 @@ export class ChainService {
   create(chain: CreateChainModel, successCallBack?: () => void, errorCallBack?: (errorMessage: string) => void) {
     this.httpClientService.post({
       controller: "chains",
-      action: "create"
+      action: "create",
     }, chain)
       .subscribe(result => {
         successCallBack();
