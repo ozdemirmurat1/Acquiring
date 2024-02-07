@@ -15,8 +15,14 @@ export class CryptoService {
   }
 
   decrypto(value:string):string{
-    var CryptoTS = require("crypto-ts");
-    var bytes  = CryptoTS.AES.decrypt(value, 'secret key 123');
-    return (bytes.toString(CryptoTS.enc.Utf8));
+    try {
+      var CryptoTS = require("crypto-ts");
+      var bytes = CryptoTS.AES.decrypt(value, 'secret key 123');
+      return bytes.toString(CryptoTS.enc.Utf8);
+  } catch (error) {
+      console.error("Şifre çözme işlemi sırasında bir hata oluştu:", error);
+      return null; // veya isteğinize göre bir değer döndürebilirsiniz
+  }
+   
   }
 }

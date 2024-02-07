@@ -3,33 +3,40 @@ import { Router } from '@angular/router';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { CustomToastrService, ToastrMessageType, ToastrPosition } from 'src/app/common/directives/services/toastr.service';
 import { _isAuthenticatedAccessTokenExpire, _isAuthenticatedRefreshTokenExpire } from './auth.service';
+import { TokenFormatService } from './token-format.service';
+import { CryptoService } from 'src/app/common/directives/services/crypto.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class IdentityCheckService {
 
-  constructor(private toastrService: CustomToastrService, private router: Router) { }
+  constructor(private toastrService: CustomToastrService, private router: Router,private tokenFormatService: TokenFormatService,private _crypto:CryptoService) { }
 
   identityCheck() {
     const jwtHelper = new JwtHelperService();
-    const token: string = localStorage.getItem("accessToken");
-    let accessTokenExpireParse = Date.parse(_isAuthenticatedAccessTokenExpire);
+    debugger;
+    let decyrptAccessToken=this._crypto.decrypto(localStorage.getItem("accessToken").toString());
+    let parseAccessToken=JSON.stringify(decyrptAccessToken);
+    //let accessTokenExpireParse = Date.parse(_isAuthenticatedAccessTokenExpire);
 
-
+    debugger;
     let expired: boolean;
+
     try {
-      expired = jwtHelper.isTokenExpired(token);
+      expired = jwtHelper.isTokenExpired(parseAccessToken);
+
     } catch {
       expired = true;
     }
 
-    _isAuthenticatedAccessToken = token != null && !expired && token != undefined && expired != undefined;
+    _isAuthenticatedAccessToken = parseAccessToken !== null && !expired && parseAccessToken != undefined && expired != undefined && decyrptAccessToken!==null && decyrptAccessToken!=="";
     debugger;
 
     if (!_isAuthenticatedAccessToken) {
 
-      const refreshToken: string = localStorage.getItem("refreshToken");
+      let decyrptRefreshToken=this._crypto.decrypto(localStorage.getItem("refreshToken").toString());
+      let parseRefreshToken=JSON.stringify(decyrptRefreshToken);
 
       let expiredRefreshToken: boolean = false;
 
@@ -39,8 +46,7 @@ export class IdentityCheckService {
         expiredRefreshToken = true;
       }
 
-
-      _isAuthenticatedRefreshToken = refreshToken != null && !expiredRefreshToken && expiredRefreshToken != undefined && expiredRefreshToken != undefined;
+      _isAuthenticatedRefreshToken = parseRefreshToken !== null && !expiredRefreshToken && parseRefreshToken!=undefined && expiredRefreshToken != undefined && decyrptRefreshToken!==null && decyrptRefreshToken!=="";
 
       if (!_isAuthenticatedRefreshToken) {
         localStorage.removeItem("accessToken");
