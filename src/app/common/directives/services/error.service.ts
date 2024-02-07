@@ -6,28 +6,42 @@ import { CustomToastrService, ToastrMessageType, ToastrPosition } from './toastr
 import { SpinnerType } from '../../base/base.component';
 import { Observable, catchError, of } from 'rxjs';
 import { Errors } from '../../models/error-model';
+import { AlertifyService, MessageType, Position } from './alertify.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class HttpErrorHandlerInterceptorService implements HttpInterceptor {
 
-  constructor(private toastrService: CustomToastrService, private router: Router, private spinner: NgxSpinnerService) { }
+  constructor(private toastrService: CustomToastrService, private router: Router, private spinner: NgxSpinnerService,private alertify:AlertifyService) { }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
 
     return next.handle(req).pipe(catchError(error => {
 
-      error:HttpErrorResponse;
-          let customError: Errors;
-          customError = error.error;
+      error: HttpErrorResponse;
+      let customError: Errors;
+      let message = "";
+      customError = error.error;
+      if (customError.Errors) {
+        debugger;
+        const _error: Array<{ Property: string, Errors: Array<string> }> = customError.Errors;
+        
+        _error.forEach((v, index) => {
+          v.Errors.forEach((_v, _index) => {
+            message += `${_v}<br>`;
+          });
+        });
+      }
+
+      debugger;
 
       switch (error.status) {
         case HttpStatusCode.Unauthorized:
-            this.toastrService.message("Bu işlemi yapmaya yetkiniz bulunmamaktadır!", "Yetkisiz işlem!", {
-              messageType: ToastrMessageType.Warning,
-              position: ToastrPosition.BottomFullWidth
-            });
+          this.toastrService.message("Bu işlemi yapmaya yetkiniz bulunmamaktadır!", "Yetkisiz işlem!", {
+            messageType: ToastrMessageType.Warning,
+            position: ToastrPosition.BottomFullWidth
+          });
 
           break;
         case HttpStatusCode.InternalServerError:
@@ -37,10 +51,20 @@ export class HttpErrorHandlerInterceptorService implements HttpInterceptor {
           });
           break;
         case HttpStatusCode.BadRequest:
-          this.toastrService.message(customError.detail, customError.status.toString(), {
-            messageType: ToastrMessageType.Warning,
-            position: ToastrPosition.BottomFullWidth
-          });
+          if(message){
+            this.alertify.message(message,
+              {
+                dismissOthers: true,
+                messageType: MessageType.Error,
+                position: Position.TopRight
+              });
+          }
+          else{
+            this.toastrService.message(message ? message : customError.detail, customError.status.toString(), {
+              messageType: ToastrMessageType.Warning,
+              position: ToastrPosition.BottomFullWidth
+            });
+          }
           break;
         case HttpStatusCode.NotFound:
           this.toastrService.message("Sayfa bulunamadı!", "Sayfa bulunamadı!", {
