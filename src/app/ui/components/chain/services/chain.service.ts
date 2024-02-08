@@ -16,14 +16,15 @@ import { AccesssToken } from '../../auth/services/identity-check.service';
 export class ChainService {
 
   constructor(private httpClientService: HttpClientService) {
-    console.log(AccesssToken)
+
    }
+   
 
   async read(PageIndex: number = 0, PageSize: number = 5, successCallBack?: () => void, errorCallBack?: (errorMessage: string) => void): Promise<{ data: PaginationResultModel<ChainModel> }> {
     const promiseData: Promise<{ data: PaginationResultModel<ChainModel> }> = this.httpClientService.get<{ data: PaginationResultModel<ChainModel> }>({
       controller: "Chains/GetList",
       queryString: `PageIndex=${PageIndex}&PageSize=${PageSize}`,
-      headers: new HttpHeaders({"Authorization":`Bearer ${AccesssToken}`})
+      headers: headers
     }).toPromise();
 
     promiseData.then(d => successCallBack())
@@ -36,7 +37,7 @@ export class ChainService {
     this.httpClientService.post({
       controller: "chains",
       action: "create",
-      headers: new HttpHeaders({"Authorization":`Bearer ${AccesssToken}`})
+      headers: headers
     }, chain)
       .subscribe(result => {
         successCallBack();
@@ -47,7 +48,7 @@ export class ChainService {
     this.httpClientService.post({
       controller: "chains",
       action: "update",
-      headers: new HttpHeaders({"Authorization":`Bearer ${AccesssToken}`})
+      headers: headers,
     }, chain)
       .subscribe(result => {
         successCallBack();
@@ -68,6 +69,16 @@ export class ChainService {
 
 
 }
+
+
+
+const headers = new HttpHeaders({
+  //'Action-Name': 'chainCreate',
+  'Authorization': `Bearer ${AccesssToken}`,
+});
+
+
+
 
 
 

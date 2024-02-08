@@ -24,7 +24,7 @@ export class HttpErrorHandlerInterceptorService implements HttpInterceptor {
       let message = "";
       debugger;
       customError = error.error;
-      if (customError!=null) {
+      if (customError.Errors!=null) {
         debugger;
         const _error: Array<{ Property: string, Errors: Array<string> }> = customError.Errors;
         
@@ -39,10 +39,20 @@ export class HttpErrorHandlerInterceptorService implements HttpInterceptor {
 
       switch (error.status) {
         case HttpStatusCode.Unauthorized:
-          this.toastrService.message("Bu işlemi yapmaya yetkiniz bulunmamaktadır!", "Yetkisiz işlem!", {
-            messageType: ToastrMessageType.Warning,
-            position: ToastrPosition.BottomFullWidth
-          });
+          if(message!=""){
+            this.alertify.message(message,
+              {
+                dismissOthers: true,
+                messageType: MessageType.Error,
+                position: Position.TopRight
+              });
+          }
+          else{
+            this.toastrService.message(message ? message : customError.detail, customError.status.toString(), {
+              messageType: ToastrMessageType.Warning,
+              position: ToastrPosition.BottomFullWidth
+            });
+          }
 
           break;
         case HttpStatusCode.InternalServerError:
