@@ -120,13 +120,6 @@ export class ChainComponent extends BaseComponent implements OnInit {
           position: Position.TopRight
         });
         this.getAll();
-      }, errorMessage => {
-        this.alertify.message(errorMessage,
-          {
-            dismissOthers: true,
-            messageType: MessageType.Error,
-            position: Position.TopRight
-          });
       });
     }
   }
@@ -141,13 +134,6 @@ export class ChainComponent extends BaseComponent implements OnInit {
           position: Position.TopRight
         });
         this.getAll();
-      }, errorMessage => {
-        this.alertify.message(errorMessage,
-          {
-            dismissOthers: true,
-            messageType: MessageType.Error,
-            position: Position.TopRight
-          });
       });
     }
   }

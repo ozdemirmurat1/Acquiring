@@ -24,7 +24,7 @@ export class HttpErrorHandlerInterceptorService implements HttpInterceptor {
       let message = "";
       debugger;
       customError = error.error;
-      if (customError.Errors!=null) {
+      if (customError!=null) {
         debugger;
         const _error: Array<{ Property: string, Errors: Array<string> }> = customError.Errors;
         

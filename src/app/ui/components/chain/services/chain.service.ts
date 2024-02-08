@@ -32,56 +32,25 @@ export class ChainService {
     return await promiseData;
   }
 
-  create(chain: CreateChainModel, successCallBack?: () => void, errorCallBack?: (errorMessage: string) => void) {
+  create(chain: CreateChainModel, successCallBack?: () => void) {
     this.httpClientService.post({
       controller: "chains",
       action: "create",
+      headers: new HttpHeaders({"Authorization":`Bearer ${AccesssToken}`})
     }, chain)
       .subscribe(result => {
         successCallBack();
-      }, (error: HttpErrorResponse) => {
-
-        let customError: Errors;
-
-        customError = error.error;
-        debugger;
-
-        const _error: Array<{ Property: string, Errors: Array<string> }> = customError.Errors;
-        let message = "";
-        _error.forEach((v, index) => {
-          v.Errors.forEach((_v, _index) => {
-            message += `${_v}<br>`;
-          });
-        });
-
-        errorCallBack(message);
-
       });
   }
 
-  update(chain: ChainModel, successCallBack?: () => void, errorCallBack?: (errorMessage: string) => void) {
+  update(chain: ChainModel, successCallBack?: () => void) {
     this.httpClientService.post({
       controller: "chains",
-      action: "update"
+      action: "update",
+      headers: new HttpHeaders({"Authorization":`Bearer ${AccesssToken}`})
     }, chain)
       .subscribe(result => {
         successCallBack();
-      }, (error: HttpErrorResponse) => {
-
-        let customError: Errors;
-
-        customError = error.error;
-
-        const _error: Array<{ Property: string, Errors: Array<string> }> = customError.Errors;
-        let message = "";
-        _error.forEach((v, index) => {
-          v.Errors.forEach((_v, _index) => {
-            message += `${_v}<br>`;
-          });
-        });
-
-        errorCallBack(message);
-
       });
   }
 
