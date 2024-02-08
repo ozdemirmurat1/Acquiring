@@ -24,7 +24,7 @@ export class HttpErrorHandlerInterceptorService implements HttpInterceptor {
       let message = "";
       debugger;
       customError = error.error;
-      if (customError!=null) {
+      if (customError.Errors!=null) {
         debugger;
         const _error: Array<{ Property: string, Errors: Array<string> }> = customError.Errors;
         
@@ -52,7 +52,7 @@ export class HttpErrorHandlerInterceptorService implements HttpInterceptor {
           });
           break;
         case HttpStatusCode.BadRequest:
-          if(message){
+          if(message!=""){
             this.alertify.message(message,
               {
                 dismissOthers: true,
@@ -74,7 +74,7 @@ export class HttpErrorHandlerInterceptorService implements HttpInterceptor {
           });
           break;
         default:
-          if(message){
+          if(message!=""){
             this.alertify.message(message,
               {
                 dismissOthers: true,
@@ -83,7 +83,7 @@ export class HttpErrorHandlerInterceptorService implements HttpInterceptor {
               });
           }
           else{
-            this.toastrService.message(message ? message : customError.detail, customError.status.toString(), {
+            this.toastrService.message(message ? message : customError.detail, "Beklenmeyen Durum Oluştu", {
               messageType: ToastrMessageType.Warning,
               position: ToastrPosition.BottomFullWidth
             });
